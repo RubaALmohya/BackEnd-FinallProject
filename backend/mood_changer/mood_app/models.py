@@ -15,4 +15,4 @@ class Content(models.Model):
     mood = models.ForeignKey(Mood, related_name= 'content_mood',on_delete=models.CASCADE)
     img = models.ImageField(upload_to="media/images/content_mood_img" , null=True)
     video = models.FileField(default = 'xxxx', upload_to="media/video", null=True )
-    description = models.CharField(max_length=450)
+    description = models.CharField(max_length=450, null=True )
