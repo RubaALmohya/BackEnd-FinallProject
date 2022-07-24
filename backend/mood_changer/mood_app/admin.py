@@ -1,3 +1,10 @@
 from django.contrib import admin
+from .models import *
 
-# Register your models here.
+class MoodAdmin(admin.ModelAdmin):
+  list_display = ('name', 'color')
+
+
+admin.site.register(Mood, MoodAdmin)
+
+

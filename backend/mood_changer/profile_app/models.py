@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from user_app.models import UserCredential
+from mood_app.models import Content
 
 excellent, good, neutral, bad, relly_bad = 5,4,3,2,1
 RATING_CHOICES = [
@@ -14,7 +16,17 @@ class Rating (models.Model):
     '''
     this model for user rating after mood diagnostic
     '''
-    user = models.ForeignKey(User, related_name='user_rating',on_delete=models.CASCADE)
+    user = models.ForeignKey(UserCredential, related_name='user_rating',on_delete=models.CASCADE)
     rating = models.IntegerField(choices=RATING_CHOICES,default=5)
+
+class Favorite(models.Model):
+    '''
+    this model for user Favorite Content
+    '''
+    user = models.ForeignKey(UserCredential, related_name= 'User_fave',on_delete=models.CASCADE)
+    Content = models.ForeignKey(Content, related_name= 'User_mood',on_delete=models.CASCADE)
+    date = models.DateTimeField(auto_now=True)
+
+
 
 
