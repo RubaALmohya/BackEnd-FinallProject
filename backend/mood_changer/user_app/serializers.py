@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import *
 from django.contrib.auth.models import User
-from mood_app.serializers import MoodSerializer
+
 
 class UserCredentialSerializer(serializers.ModelSerializer):
     pic = serializers.SerializerMethodField(required=False)
@@ -10,8 +10,10 @@ class UserCredentialSerializer(serializers.ModelSerializer):
         model = UserCredential
         fields = '__all__'
 
-'''    def get_driver_licence(self, record: UserCredential):
-        return record.driver_licence.url'''
+    '''    
+     Translated the model instance into Python native datatypes.
+     To finalise the serialization process we render the 'UserCredential Model'  data into json
+    '''
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -27,3 +29,8 @@ class UserSerializer(serializers.ModelSerializer):
 
         UserCredential.objects.create(user=user_instance,pic= user_credential['pic'])
         return user_instance
+
+    '''    
+     Translated the model instance into Python native datatypes.
+     To finalise the serialization process we render the 'User Model'  data into json
+    '''

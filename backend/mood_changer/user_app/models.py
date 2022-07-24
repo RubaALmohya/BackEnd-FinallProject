@@ -11,6 +11,10 @@ class UserCredential(models.Model):
     pic = models.ImageField(upload_to="media/images/user_profile_pic")
 
 class UserMood(models.Model):
+    '''
+    this model contains the one-to-one relationship.
+    Select the user and the user's mood
+    '''
     user = models.ForeignKey(UserCredential, related_name= 'user_credential',on_delete=models.CASCADE)
     mood = models.ForeignKey(Mood, related_name= 'User_mood',on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now=True)
