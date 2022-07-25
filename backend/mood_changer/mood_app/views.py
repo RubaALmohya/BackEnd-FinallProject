@@ -63,7 +63,7 @@ def TakePhoto(response):
 
 
 @api_view(['GET'])
-# @authentication_classes([JWTAuthentication])
+#@authentication_classes([JWTAuthentication])
 def EmotionPrediction(request):
     '''
     This is an API for classifying and identifying emotion from the captured image using machine learning
