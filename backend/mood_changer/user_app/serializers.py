@@ -24,7 +24,7 @@ class UserSerializer(serializers.ModelSerializer):
      Translated the model instance into Python native datatypes.
      To finalise the serialization process we render the 'User Model'  data into json
     '''
-    user_credential = UserCredentialSerializer()
+    user_credential = UserCredentialSerializer(required=False)
 
     class Meta:
         model = User
