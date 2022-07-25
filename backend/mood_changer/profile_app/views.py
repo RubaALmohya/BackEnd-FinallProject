@@ -8,7 +8,7 @@ from rest_framework.decorators import api_view
 from django.contrib.auth.models import User
 from user_app.models import UserCredential
 from .serializers import *
-from user_app.serializers import UserSerializer
+from user_app.serializers import UserSerializer, UserCredentialSerializer
 from .models import *
 
 
@@ -20,10 +20,12 @@ def get_user_info(request : Request):
     """
 
     if request.user.is_authenticated:
-        user = User.objects.get(id= request.user.id)
+        loged_user = User.objects.get(id= request.user.id)
+        user_crudintal = UserCredential.objects.get(user=loged_user)
         dataResponse ={
             'msg': f'user {request.user.username} info',
-            'info': UserSerializer(instance=user).data
+            'info': UserSerializer(instance=loged_user).data,
+            'pic': UserCredentialSerializer(instance=user_crudintal).data
         }
         return Response(dataResponse, status=status.HTTP_200_OK)
     else:
