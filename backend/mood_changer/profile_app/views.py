@@ -1,4 +1,3 @@
-
 from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -31,3 +30,27 @@ def get_user_info(request : Request):
     else:
         dataResponse = {'msg':  'unathurazed access'}
         return Response(dataResponse, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+@api_view(['GET'])
+@authentication_classes([JWTAuthentication])
+def get_user_fav(request : Request):
+    """
+     this API to get loged user fav
+     """
+
+    if request.user.is_authenticated:
+        loged_user = User.objects.get(id=request.user.id)
+        user_fav = Favorite.objects.filter(user=loged_user)
+
+        dataResponse = {
+            'msg': f'user {request.user.username} fav',
+            'fav': FavoriteSerializer(instance=user_fav ,many=True).data
+        }
+        return Response(dataResponse, status=status.HTTP_200_OK)
+
+    else:
+        dataResponse = {'msg': 'unathurazed access'}
+        return Response(dataResponse, status=status.HTTP_400_BAD_REQUEST)
+
