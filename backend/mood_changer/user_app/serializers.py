@@ -15,8 +15,8 @@ class UserCredentialSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-    '''def get_driver_licence(self, record: UserCredential):
-        return record.pic.url'''
+    def get_pic(self, record: UserCredential):
+        return record.pic.url
 
 
 class UserSerializer(serializers.ModelSerializer):
