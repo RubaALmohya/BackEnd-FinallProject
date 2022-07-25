@@ -7,9 +7,10 @@ from rest_framework.decorators import api_view, authentication_classes
 from rest_framework.decorators import api_view
 from django.contrib.auth.models import User
 from user_app.models import UserCredential
-from .serializers import *
 from user_app.serializers import UserSerializer, UserCredentialSerializer
+from mood_app.models import Content
 from .models import *
+from .serializers import *
 
 
 @api_view(['GET'])
@@ -30,4 +31,25 @@ def get_user_info(request : Request):
         return Response(dataResponse, status=status.HTTP_200_OK)
     else:
         dataResponse = {'msg':  'unathurazed access'}
+        return Response(dataResponse, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@authentication_classes([JWTAuthentication])
+def add_user_fav(request: Request, content_id):
+    '''
+    this Api add new liked content into loged user favorite table
+    '''
+    if request.user.is_authenticated:
+        loged_user = User.objects.get(id=request.user.id)
+        new_contant = Content.objects.get(id=content_id)
+        fav_contant = Favorite.objects.create(user=loged_user, Content=new_contant)
+
+        dataResponse = {
+            'msg': 'Success',
+            'new_contant': f'{fav_contant.Content.mood.name}' }
+        return Response(dataResponse, status=status.HTTP_200_OK)
+
+    else:
+        dataResponse = {'msg': 'unathurazed access'}
         return Response(dataResponse, status=status.HTTP_400_BAD_REQUEST)
