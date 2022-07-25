@@ -6,5 +6,7 @@ class MoodAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Mood, MoodAdmin)
+admin.site.register(Content)
+
 
 
