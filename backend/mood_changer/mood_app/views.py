@@ -1,5 +1,4 @@
 
-from .serializers import *
 from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -12,6 +11,8 @@ from deepface import DeepFace
 from django.http import FileResponse
 from django.contrib.auth.models import User
 from user_app.models import UserCredential,UserMood
+from .serializers import *
+from .models import *
 
 @api_view(['GET'])
 @authentication_classes([JWTAuthentication])
@@ -42,7 +43,7 @@ def user_moods(request : Request):
 
 
 @api_view(['GET'])
-@authentication_classes([JWTAuthentication])
+# @authentication_classes([JWTAuthentication])
 def TakePhoto(response):
     '''
     This API is to take the picture from the camera
@@ -62,7 +63,7 @@ def TakePhoto(response):
 
 
 @api_view(['GET'])
-@authentication_classes([JWTAuthentication])
+# @authentication_classes([JWTAuthentication])
 def EmotionPrediction(request):
     '''
     This is an API for classifying and identifying emotion from the captured image using machine learning
@@ -82,7 +83,13 @@ def EmotionPrediction(request):
 
 # helper function
 def add_userMood(user_id, PickleFile):
-    print("+++++++++++++++++++++++++++++++++++++")
-    print(PickleFile['dominant_emotion'])
- #get user and mood
- # crreat and add into  user mood
+     '''
+     this method is being called by mood prediction API  to add 'dominant_emotion into user_mood table
+     '''
+     print(PickleFile['dominant_emotion'])
+     #get user and mood
+     loged_user = User.objects.get(id = 1)
+     new_mood = Mood.objects.get(name = PickleFile['dominant_emotion'])
+     # crreat and add into  user mood
+     user_mood = UserMood.objects.create(user=loged_user, mood=new_mood)
+
