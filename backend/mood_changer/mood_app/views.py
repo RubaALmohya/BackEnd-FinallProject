@@ -19,7 +19,7 @@ from .models import *
 @authentication_classes([JWTAuthentication])
 def user_moods(request : Request):
     '''
-    this method list all the previous users moods state.
+    this method list all the previous user's moods state.
     :param: request
     :return: dataResponse
     '''
@@ -50,6 +50,8 @@ def user_moods(request : Request):
 def TakePhoto(response):
     '''
     This API is to take the picture from the camera
+    :param: request
+    :return:
     '''
     global photo
     camera = cv2.VideoCapture(0)
@@ -70,6 +72,8 @@ def TakePhoto(response):
 def EmotionPrediction(request: Request):
     '''
     This is an API for classifying and identifying emotion from the captured image using machine learning
+    :param: request
+    :return:
     '''
 
     predictionImg = DeepFace.analyze(photo)
@@ -88,9 +92,9 @@ def EmotionPrediction(request: Request):
 @authentication_classes([JWTAuthentication])
 def display_content(request: Request):
     '''
-    this function display the content for the user after emotion analysis by there img
-    :param request:
-    :return:
+    this function displays  the content for the user after emotion analysis by their img
+    :param request: Request
+    :return:dataResponse
     '''
     if request.user.is_authenticated:
         loged_user = User.objects.get(id=request.user.id)
