@@ -30,13 +30,15 @@ def user_moods(request : Request):
       user_moods = UserMood.objects.filter(user=loged_user) #UserMoods attribute(id, user, mood, date)
 
       user_moods_date = [str(i.date)[:10] for i in user_moods]
-      user_moods_info = {i.mood.name: i.mood.color for i in user_moods }
+      user_moods_name = [ i.mood.name for i in user_moods ]
+      user_moods_color = [ i.mood.color for i in user_moods ]
 
 
       dataResponse = {
         "msg" : f"List of All user {request.user.username} moods",
         "user_moods_date": user_moods_date ,
-        "user_moods" : user_moods_info
+        "emotion_name" : user_moods_name,
+        "emotion_color" : user_moods_color
       }
       return Response(dataResponse, status=status.HTTP_200_OK)
     except Exception as e:
