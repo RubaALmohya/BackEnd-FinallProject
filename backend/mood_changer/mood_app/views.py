@@ -1,3 +1,4 @@
+import random
 
 from rest_framework import status
 from rest_framework.request import Request
@@ -18,7 +19,7 @@ from .models import *
 @authentication_classes([JWTAuthentication])
 def user_moods(request : Request):
     '''
-    this method list all the previous users moods state.
+    this method list all the previous user's moods state.
     :param: request
     :return: dataResponse
     '''
@@ -29,13 +30,15 @@ def user_moods(request : Request):
       user_moods = UserMood.objects.filter(user=loged_user) #UserMoods attribute(id, user, mood, date)
 
       user_moods_date = [str(i.date)[:10] for i in user_moods]
-      user_moods_info = {i.mood.name: i.mood.color for i in user_moods }
+      user_moods_name = [ i.mood.name for i in user_moods ]
+      user_moods_color = [ i.mood.color for i in user_moods ]
 
 
       dataResponse = {
         "msg" : f"List of All user {request.user.username} moods",
         "user_moods_date": user_moods_date ,
-        "user_moods" : user_moods_info
+        "emotion_name" : user_moods_name,
+        "emotion_color" : user_moods_color
       }
       return Response(dataResponse, status=status.HTTP_200_OK)
     except Exception as e:
@@ -47,6 +50,8 @@ def user_moods(request : Request):
 def TakePhoto(response):
     '''
     This API is to take the picture from the camera
+    :param: request
+    :return:
     '''
     global photo
     camera = cv2.VideoCapture(0)
@@ -67,6 +72,8 @@ def TakePhoto(response):
 def EmotionPrediction(request: Request):
     '''
     This is an API for classifying and identifying emotion from the captured image using machine learning
+    :param: request
+    :return:
     '''
 
     predictionImg = DeepFace.analyze(photo)
@@ -85,18 +92,22 @@ def EmotionPrediction(request: Request):
 @authentication_classes([JWTAuthentication])
 def display_content(request: Request):
     '''
-    this function display the content for the user after emotion analysis by there img
-    :param request:
-    :return:
+    this function displays  the content for the user after emotion analysis by their img
+    :param request: Request
+    :return:dataResponse
     '''
     if request.user.is_authenticated:
         loged_user = User.objects.get(id=request.user.id)
         last_recorded_mood = UserMood.objects.filter(user=loged_user).last()
 
         content = Content.objects.filter(mood=last_recorded_mood.mood)
+
+        random_num = random.randrange(0, content.count())
+        random_content = content[random_num]
+
         dataResponse = {
             'msg': f'user {request.user.username} content after emotion analysis',
-            'content': ContentSerializer(instance=content, many=True).data}
+            'content': ContentSerializer(instance=random_content).data }
         return Response(dataResponse, status=status.HTTP_200_OK)
 
     else:

@@ -17,7 +17,9 @@ from .serializers import *
 @authentication_classes([JWTAuthentication])
 def get_user_info(request : Request):
     """
-    this API to get loged user info
+    this API to get the logged_in user info
+    :param request: Request
+    :return: dataResponse
     """
 
     if request.user.is_authenticated:
@@ -38,7 +40,9 @@ def get_user_info(request : Request):
 @authentication_classes([JWTAuthentication])
 def add_user_fav(request: Request, content_id):
     '''
-    this function add new liked content into loged user favorite table
+    this function add new liked content into user favorite table.
+    :param request: Request
+    :return: dataResponse
     '''
     if request.user.is_authenticated:
         loged_user = User.objects.get(id=request.user.id)
@@ -55,12 +59,13 @@ def add_user_fav(request: Request, content_id):
         return Response(dataResponse, status=status.HTTP_400_BAD_REQUEST)
 
 
-
 @api_view(['GET'])
 @authentication_classes([JWTAuthentication])
 def get_user_fav(request : Request):
      """
-      this API to get loged user fav
+      this API to get the logged_in user favorite's.
+      :param request: Request
+      :return: dataResponse
      """
 
      if request.user.is_authenticated:
@@ -81,7 +86,9 @@ def get_user_fav(request : Request):
 @authentication_classes([JWTAuthentication])
 def delete_uers_fav(request ,fav_id):
     '''
-    this API to delete loged user fav
+    this API to delete logged_in user favorite.
+    :param request: Request
+    :return: dataResponse
     '''
     if request.user.is_authenticated:
         request.data.update(user=request.user.id)
@@ -102,7 +109,7 @@ def delete_uers_fav(request ,fav_id):
 def add_rating(request: Request):
     '''
      this function add new user rating into ratting table
-    :param request:
+    :param request:request
     :return:dataResponse
     '''
     if request.user.is_authenticated:
@@ -124,8 +131,8 @@ def add_rating(request: Request):
 def get_overall_rating_AVG(request: Request):
     '''
     this function calc the overall rating of the website
-    :param request:
-    :return:
+    :param request:request
+    :return:dataResponse
     '''
     ratings = Rating.objects.all()
     avg = sum([i.rating for i in ratings])/Rating.objects.count()
@@ -141,8 +148,8 @@ def get_overall_rating_AVG(request: Request):
 @authentication_classes([JWTAuthentication])
 def get_user_rating_avg(request: Request):
     '''
-     this function calc loged user rating avg
-    :param request:
+     this function calc logged_in user rating avg
+    :param request:request
     :return:dataResponse
     '''
     if request.user.is_authenticated:
