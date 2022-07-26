@@ -8,7 +8,7 @@ class UserCredentialSerializer(serializers.ModelSerializer):
          Translated the model instance into Python native datatypes.
          To finalise the serialization process we render the 'UserCredential Model'  data into json
         '''
-    pic = serializers.SerializerMethodField()
+    pic = serializers.SerializerMethodField(required=False)
 
     class Meta:
         model = UserCredential
@@ -34,6 +34,6 @@ class UserSerializer(serializers.ModelSerializer):
         user_credential = validated_data.pop('user_credential')
         user_instance = User.objects.create(**validated_data)
 
-        UserCredential.objects.create(user=user_instance,pic= user_credential['pic'])
+        UserCredential.objects.create(user=user_instance)
         return user_instance
 
