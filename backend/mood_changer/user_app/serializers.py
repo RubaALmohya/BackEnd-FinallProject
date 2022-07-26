@@ -8,7 +8,7 @@ class UserCredentialSerializer(serializers.ModelSerializer):
          Translated the model instance into Python native datatypes.
          To finalise the serialization process we render the 'UserCredential Model'  data into json
         '''
-    pic = serializers.SerializerMethodField(required=False)
+    pic = serializers.SerializerMethodField()
 
     class Meta:
         model = UserCredential
@@ -24,7 +24,7 @@ class UserSerializer(serializers.ModelSerializer):
      Translated the model instance into Python native datatypes.
      To finalise the serialization process we render the 'User Model'  data into json
     '''
-    user_credential = UserCredentialSerializer(required=False)
+    user_credential = UserCredentialSerializer()
 
     class Meta:
         model = User
