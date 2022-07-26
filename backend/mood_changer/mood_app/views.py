@@ -1,3 +1,4 @@
+import random
 
 from rest_framework import status
 from rest_framework.request import Request
@@ -94,9 +95,13 @@ def display_content(request: Request):
         last_recorded_mood = UserMood.objects.filter(user=loged_user).last()
 
         content = Content.objects.filter(mood=last_recorded_mood.mood)
+
+        random_num = random.randrange(0, content.count())
+        random_content = content[random_num]
+
         dataResponse = {
             'msg': f'user {request.user.username} content after emotion analysis',
-            'content': ContentSerializer(instance=content, many=True).data}
+            'content': ContentSerializer(instance=random_content).data }
         return Response(dataResponse, status=status.HTTP_200_OK)
 
     else:
