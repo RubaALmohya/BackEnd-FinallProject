@@ -9,6 +9,7 @@ from user_app.models import UserCredential
 from user_app.serializers import UserSerializer, UserCredentialSerializer
 from mood_app.models import Content
 from .models import *
+from .models import Favorite
 from .serializers import *
 
 
@@ -47,27 +48,50 @@ def add_user_fav(request: Request, content_id):
         dataResponse = {
             'msg': 'Success',
             'new_contant': f'{fav_contant.Content.mood.name}' }
-
-
-@api_view(['GET'])
-@authentication_classes([JWTAuthentication])
-def get_user_fav(request : Request):
-    """
-     this API to get loged user fav
-     """
-
-    if request.user.is_authenticated:
-        loged_user = User.objects.get(id=request.user.id)
-        user_fav = Favorite.objects.filter(user=loged_user)
-
-        dataResponse = {
-            'msg': f'user {request.user.username} fav',
-            'fav': FavoriteSerializer(instance=user_fav ,many=True).data
-        }
-
         return Response(dataResponse, status=status.HTTP_200_OK)
 
     else:
         dataResponse = {'msg': 'unathurazed access'}
         return Response(dataResponse, status=status.HTTP_400_BAD_REQUEST)
 
+
+@api_view(['GET'])
+@authentication_classes([JWTAuthentication])
+def get_user_fav(request : Request):
+     """
+      this API to get loged user fav
+     """
+
+     if request.user.is_authenticated:
+         loged_user = User.objects.get(id=request.user.id)
+         user_fav = Favorite.objects.filter(user=loged_user)
+
+         dataResponse = {
+             'msg': f'user {request.user.username} fav',
+             'fav': FavoriteSerializer(instance=user_fav ,many=True).data
+         }
+         return Response(dataResponse, status=status.HTTP_200_OK)
+
+     else:
+         dataResponse = {'msg': 'unathurazed access'}
+         return Response(dataResponse, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['DELETE'])
+@authentication_classes([JWTAuthentication])
+def delete_uers(request ,fav_id):
+    '''
+    this API to delete loged user fav
+    '''
+    if request.user.is_authenticated:
+        request.data.update(user=request.user.id)
+        user_delete = Favorite.objects.get(id=fav_id)
+
+        if user_delete.user.id == request.user.id:
+            user_delete.delete()
+
+            dataResponse = {"msg": "Deleted Successfully"}
+            return Response(dataResponse ,status=status.HTTP_200_OK)
+        else:
+            # print(user_delete.errors)
+            dataResponse = {"msg": "bad request, cannot delete"}
+            return Response(dataResponse, status=status.HTTP_400_BAD_REQUEST)
