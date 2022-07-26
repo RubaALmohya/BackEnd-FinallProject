@@ -7,7 +7,7 @@ class UserCredential(models.Model):
      this model add another attrib to auth.model.user via one-to-one relationship
     '''
     user = models.OneToOneField(User, related_name= 'user_credential',on_delete=models.CASCADE, null=True)
-    pic = models.ImageField(upload_to="media/images/user_profile_pic")
+    pic = models.URLField()
 
 class UserMood(models.Model):
     '''
