@@ -43,7 +43,7 @@ def user_moods(request : Request):
 
 
 @api_view(['GET'])
-# @authentication_classes([JWTAuthentication])
+@authentication_classes([JWTAuthentication])
 def TakePhoto(response):
     '''
     This API is to take the picture from the camera
@@ -63,14 +63,13 @@ def TakePhoto(response):
 
 
 @api_view(['GET'])
-#@authentication_classes([JWTAuthentication])
-def EmotionPrediction(request):
+@authentication_classes([JWTAuthentication])
+def EmotionPrediction(request: Request):
     '''
     This is an API for classifying and identifying emotion from the captured image using machine learning
     '''
 
-    #predictionImg = DeepFace.analyze(photo)
-    predictionImg = DeepFace.analyze('https://image.shutterstock.com/image-photo/sad-little-girl-pigtails-portrait-260nw-1269412360.jpg')
+    predictionImg = DeepFace.analyze(photo)
     print(predictionImg)
     print(predictionImg['dominant_emotion'])
     filename = 'takephoto.pkl'
@@ -80,6 +79,29 @@ def EmotionPrediction(request):
                      "details":PickleFile}
     add_userMood(request.user.id ,PickleFile)
     return Response(userslist)
+
+
+@api_view(['GET'])
+@authentication_classes([JWTAuthentication])
+def display_content(request: Request):
+    '''
+    this function display the content for the user after emotion analysis by there img
+    :param request:
+    :return:
+    '''
+    if request.user.is_authenticated:
+        loged_user = User.objects.get(id=request.user.id)
+        last_recorded_mood = UserMood.objects.filter(user=loged_user).last()
+
+        content = Content.objects.filter(mood=last_recorded_mood.mood)
+        dataResponse = {
+            'msg': f'user {request.user.username} content after emotion analysis',
+            'content': ContentSerializer(instance=content, many=True).data}
+        return Response(dataResponse, status=status.HTTP_200_OK)
+
+    else:
+        dataResponse = {'msg': 'unathurazed access'}
+        return Response(dataResponse, status=status.HTTP_400_BAD_REQUEST)
 
 # helper function
 def add_userMood(user_id, PickleFile):

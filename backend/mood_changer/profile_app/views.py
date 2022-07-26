@@ -37,7 +37,7 @@ def get_user_info(request : Request):
 @authentication_classes([JWTAuthentication])
 def add_user_fav(request: Request, content_id):
     '''
-    this Api add new liked content into loged user favorite table
+    this function add new liked content into loged user favorite table
     '''
     if request.user.is_authenticated:
         loged_user = User.objects.get(id=request.user.id)
@@ -70,4 +70,64 @@ def get_user_fav(request : Request):
     else:
         dataResponse = {'msg': 'unathurazed access'}
         return Response(dataResponse, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@authentication_classes([JWTAuthentication])
+def add_rating(request: Request):
+    '''
+     this function add new user rating into ratting table
+    :param request:
+    :return:dataResponse
+    '''
+    if request.user.is_authenticated:
+        loged_user = User.objects.get(id=request.user.id)
+        new_rating = Rating.objects.create(user=loged_user, rating=request.data['rating'])
+
+        dataResponse = {
+            'msg': f'user {request.user.username} posted rating',
+            'fav': RatingSerializer(instance=new_rating).data
+        }
+
+        return Response(dataResponse, status=status.HTTP_200_OK)
+
+    else:
+        dataResponse = {'msg': 'unathurazed access'}
+        return Response(dataResponse, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+def get_overall_rating_AVG(request: Request):
+    '''
+    this function calc the overall rating of the website
+    :param request:
+    :return:
+    '''
+    ratings = Rating.objects.all()
+    avg = sum([i.rating for i in ratings])/Rating.objects.count()
+
+    dataResponse = {
+        'msg': f'overall rating of the website',
+        'AVG': f'{avg}'
+    }
+    return Response(dataResponse, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+@authentication_classes([JWTAuthentication])
+def get_user_rating_avg(request: Request):
+    '''
+     this function calc loged user rating avg
+    :param request:
+    :return:dataResponse
+    '''
+    if request.user.is_authenticated:
+     loged_user = User.objects.get(id=request.user.id)
+     ratings = Rating.objects.filter(user=loged_user)
+     avg = sum([i.rating for i in ratings]) / ratings.count()
+
+     dataResponse = {
+        'msg': f'user {request.user.username} avg rating of the website',
+        'AVG': f'{avg}'
+     }
+     return Response(dataResponse, status=status.HTTP_200_OK)
 
