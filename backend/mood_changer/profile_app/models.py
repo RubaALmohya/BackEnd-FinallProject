@@ -23,7 +23,7 @@ class Favorite(models.Model):
     this model for user Favorite Content
     '''
     user = models.ForeignKey(User, related_name= 'User_fave',on_delete=models.CASCADE)
-    Content = models.ForeignKey(Content, related_name= 'User_mood',on_delete=models.CASCADE)
+    Content = models.ForeignKey(Content, related_name= 'fav_content',on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now=True)
 
 

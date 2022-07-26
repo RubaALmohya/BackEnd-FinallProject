@@ -14,9 +14,9 @@ class UserCredentialSerializer(serializers.ModelSerializer):
         model = UserCredential
         fields = '__all__'
 
-'''
+
     def get_pic(self, record: UserCredential):
-        return record.pic.url'''
+        return record.pic
 
 
 class UserSerializer(serializers.ModelSerializer):
