@@ -31,15 +31,13 @@ def login(request: Request):
     if 'username' in request.data and 'password' in request.data:
       try:
         user = User.objects.get(username=request.data['username'], password=request.data['password'])
-        user_credential = UserCredential.objects.get(user=user)
 
-        if user_credential:
-            token = AccessToken.for_user(user)
-            dataResponse = {
+        token = AccessToken.for_user(user)
+        dataResponse = {
                 "msg": "Your token have been generated",
                 "token": str(token)
             }
-            return Response(dataResponse)
+        return Response(dataResponse)
       except Exception:
         user = authenticate(username=request.data['username'], password=request.data['password'])
         if user:
