@@ -75,18 +75,21 @@ def EmotionPrediction(request: Request):
     :param: request
     :return:
     '''
-
-    predictionImg = DeepFace.analyze(photo)
-    print(predictionImg)
-    print(predictionImg['dominant_emotion'])
-    filename = 'takephoto.pkl'
-    joblib.dump(predictionImg, filename)
-    PickleFile=joblib.load("takephoto.pkl")
-    userslist = {"msg": "Image Emotion",
-                     "details":PickleFile}
-    add_userMood(request.user.id ,PickleFile)
-    return Response(userslist)
-
+    if request.user.is_authenticated:
+        predictionImg = DeepFace.analyze('mood0.png')
+        ID = request.user.id
+        print(predictionImg)
+        print(predictionImg['dominant_emotion'])
+        filename = 'takephoto.pkl'
+        joblib.dump(predictionImg, filename)
+        PickleFile=joblib.load("takephoto.pkl")
+        userslist = {"msg": "Image Emotion",
+                         "details":PickleFile}
+        add_userMood( ID,PickleFile)
+        return Response(userslist)
+    else:
+        dataResponse = {'msg': 'unathurazed access'}
+        return Response(dataResponse, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
 @authentication_classes([JWTAuthentication])
@@ -120,8 +123,9 @@ def add_userMood(user_id, PickleFile):
      this method is being called by mood prediction API  to add 'dominant_emotion into user_mood table
      '''
      print(PickleFile['dominant_emotion'])
+     print(user_id)
      #get user and mood
-     loged_user = User.objects.get(id = 1)
+     loged_user = User.objects.get(id = user_id)
      new_mood = Mood.objects.get(name = PickleFile['dominant_emotion'])
      # crreat and add into  user mood
      user_mood = UserMood.objects.create(user=loged_user, mood=new_mood)

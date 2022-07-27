@@ -20,5 +20,5 @@ class ContentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Content
-        fields = ['img','video','description']
+        fields = ['id', 'img','video','description']
 
